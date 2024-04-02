@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+    <title>Análisis de Texto</title>
+</head>
+<body>
+    <div id="container">
+        <textarea id="entrada" placeholder="Ingresa texto aquí"></textarea>
+        <button id="analyze-button" onclick="analyzeCode()">Analizar</button>
+        <div id="resultado_lexico"></div>
+        <div id="resultado_sintactico"></div>
+    </div>
+    
+    
+<script>
+    function analyzeCode() {
+       const code = document.getElementById('entrada').value
+       
+
+       fetch('/api/v1/lexer', {
+           method: 'POST',
+           headers: {
+               'content-Type': 'application/json',
+           },
+           body: JSON.stringify({code:code}),
+       })
+       .then(response=> {
+           if (!response.ok) {
+               throw new Error(`HTTP error! Status: ${response.status}`);
+           }
+           return response.text(); //obtener el contenido de la respuesta como texto
+       })
+       .then(data=> {
+           //insertar el contenido html en el div resulContainer
+           document.getElementById('resultado_lexico').innerHTML = data;
+       })
+       .cath(error=> console.error('error:', error));
+
+   }
+   </script>
+
+</body>
+</html>
